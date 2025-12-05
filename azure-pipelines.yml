@@ -15,6 +15,9 @@ variables:
   containerRegistry: 'azuredevopsapprepo.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  # Manually set the Java Home for the self-hosted agent
+  # Pointing to Java 21 since that is what is installed
+  JAVA_HOME_17_X64: '/usr/lib/jvm/java-21-openjdk-amd64'
 
 stages:
 - stage: Build
@@ -39,7 +42,9 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.17'
+        # Changed to 1.17 (Maven task supports 1.17, but we point it to JDK 21 path)
+        # The task uses the variable JAVA_HOME_17_X64 to find the JDK
+        jdkVersionOption: '1.17' 
         mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
         effectivePomSkip: false
