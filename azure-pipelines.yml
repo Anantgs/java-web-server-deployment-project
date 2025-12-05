@@ -30,6 +30,22 @@ stages:
       name: 'Govinda-ubuntu'
       
     steps:
+    # 1. Build the Java project with Maven
+    - task: Maven@4
+      displayName: 'Maven Build'
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'clean package'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.17'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+
+    # 2. Build and Push Docker Image
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
